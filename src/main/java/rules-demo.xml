@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:context="http://www.springframework.org/schema/context" xmlns:schedulers="http://www.mulesoft.org/schema/mule/schedulers" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/schedulers http://www.mulesoft.org/schema/mule/schedulers/current/mule-schedulers.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+    <context:property-placeholder location="mule-app.properties"/>
+    <file:connector name="File" outputPattern="harini.csv" writeToDirectory="D:\" readFromDirectory="D:\Users\cr41tiv$" autoDelete="true" streaming="true" validateConnections="true" doc:name="File"/>
+    <http:listener-config name="HTTP_Listener_Configuration1" host="0.0.0.0" port="${http.port}" doc:name="HTTP Listener Configuration"/>
+    <db:mysql-config name="MySQL_Configuration" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" doc:name="MySQL Configuration"/>
+    <http:request-config name="HTTP_Request_Configuration" host="${http.RHost}" port="${http.RPort}" doc:name="HTTP Request Configuration"/>
+    <flow name="rules-gfdkhab152cbaskdghasiohdbgasiodgasiuld">
+        <http:listener config-ref="HTTP_Listener_Configuration1" path="/" doc:name="HTTP" />
+        <set-variable variableName="Alph48375" value="#[payload]" doc:name="Variable"/>
+        <set-payload doc:name="Set Payload"/>
+        <set-property propertyName="Test1" value="test1" doc:name="Property"/>
+        <set-variable variableName="Variable1" value="var1" doc:name="Variable"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="${url.path}" method="GET" doc:name="HTTP"/>
+        <logger message="payload" level="INFO" doc:name="Logger"/>
+        <logger message="payload" level="INFO" doc:name="Logger 2"/>
+        <logger message="payload" level="INFO" doc:name="Logger 3"/>
+        <logger message="payload" level="INFO" doc:name="Logger 4"/>
+        <logger message="payload" level="INFO" doc:name="Logger 5"/>
+        <logger message="payload" level="INFO" doc:name="Logger 6"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </flow>
+    <batch:job name="rules-demoBatch">
+        <batch:process-records>
+            <batch:step name="Batch_Step"/>
+        </batch:process-records>
+        <batch:on-complete>
+            <logger level="INFO" doc:name="Logger"/>
+        </batch:on-complete>
+    </batch:job>
+    <flow name="rules-demoFlow1">
+        <scatter-gather doc:name="Scatter-Gather"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="rules-demoFlow">
+        <db:delete config-ref="MySQL_Configuration" doc:name="Database">
+            <db:dynamic-query/>
+        </db:delete>
+        <set-variable variableName="Variable2" value="var2" doc:name="Variable"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="rules-demoFlow2">
+        <poll doc:name="Poll">
+            <schedulers:cron-scheduler expression="1000"/>
+        </poll>
+        <set-variable variableName="Variable3" value="variable3" doc:name="Variable"/>
+    </flow>
+    <flow name="rules-demoFlow3">
+        <poll doc:name="Poll">
+            <fixed-frequency-scheduler frequency="${poll.frequency}"/>
+        </poll>
+        <set-variable variableName="variable4" value="var4" doc:name="Variable"/>
+    </flow>
+    
+    
+</mule>
